@@ -1,6 +1,6 @@
 import socket;
 
-HOST = "192.168.99.62"
+HOST = "[Your IP Address]"
 PORT = 4444 # Your PORT
 
 server = socket.socket()

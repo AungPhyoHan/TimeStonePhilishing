@@ -4,7 +4,7 @@ from tkinter.ttk import *;
 from email_validator import validate_email,EmailNotValidError
 import socket;
 
-REMOTE_IP = "192.168.99.62"
+REMOTE_IP = "[Server-IP-Address]"
 REMOTE_PORT = 4444 # Server Port Number
 
 #when gmail and password check are finished, execute this login
