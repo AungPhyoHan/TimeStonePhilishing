@@ -14,6 +14,8 @@ while True:
     while client:
         result = client.recv(1024).decode()
         print(result)
+        # if target closed software, server will get exception "broken pipe"
+        # so if exception, loop will be broken
         try:
             client.send("okay".encode())
         except:
