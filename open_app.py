@@ -79,8 +79,10 @@ def btn_Event(isFacebook):
     gbtn.pack(pady=20)
 
 def on_closing(client):
-    client.send("close".encode());
-    window.destroy()
+    chk_close = messagebox.askokcancel("Exit","Are you sure to exit!")
+    if(chk_close):
+        client.send("close".encode());
+        window.destroy()
 
 client = socket.socket()
 client.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
